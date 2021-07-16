@@ -6,7 +6,7 @@ import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet 
 
 function ProfileSidebar(propriedades) {
   return(
-    <Box>
+    <Box as="aside">
       <img src={`https://github.com/${propriedades.githubUser}.png`} style={{ borderRadius: '8px'}} />
       <hr /> 
       <p>
@@ -25,9 +25,13 @@ function ProfileSidebar(propriedades) {
 }
 
 export default function Home() {
-  React.useState();
   const usuarioAleatorio = 'LukasWyver';
-  const comunidades = ['Alurakut'];
+  const [ comunidades, setComunidades ] = React.useState([{
+    id: 'adadadsad',
+    title: 'Eu odeio acordar cedo',
+    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
+  }]);
+  
   const pessoasFavoritas = [
     'juunegreiros',
     'omariosouto',
@@ -63,9 +67,16 @@ export default function Home() {
             <h2 className="subTitle">O que você deseja fazer?</h2>
             <form onSubmit={function handleCriaComunidade(e){
               e.preventDefault();
+                const dadosDoForm = new FormData(e.target);
+                
+                const comunidade = {
+                  id: new Date().toISOString(),
+                  title: dadosDoForm.get('title'),
+                  image: dadosDoForm.get('image'),
+                }
 
-                comunidades.push('Alura Stars');
-                console.log(comunidades);
+                const comunidadesAtualizadas = [...comunidades, comunidade];
+                setComunidades(comunidadesAtualizadas)                
             }}>
               <div>
                 <input 
@@ -88,37 +99,20 @@ export default function Home() {
               </button>
             </form>
           </Box>
-
         </div>
         
 
         {/* ============================ AMIGOS  */}
-        <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
-
-          <ProfileRelationsBoxWrapper>
-                <ul>
-                  {comunidades.map((itemAtual) => {
-                      return (
-                      <li>
-                          <a href={`/user/${itemAtual}`} key={itemAtual}>
-                            <img src={`https://placehold.it/300x300`} />
-                            <span>{itemAtual}</span>
-                          </a>
-                      </li>
-                      )
-                    })}
-                </ul>
-          </ProfileRelationsBoxWrapper>
-
+        <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>          
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
-              Pessoas da comunidade ({pessoasFavoritas.length})
+              Meus amigos ({pessoasFavoritas.length})
             </h2>
             <ul>
               {pessoasFavoritas.map((itemAtual) => {
                   return (
-                   <li>
-                      <a href={`/user/${itemAtual}`} key={itemAtual}>
+                   <li key={itemAtual}>
+                      <a href={`/users/${itemAtual}`}>
                         <img src={`https://github.com/${itemAtual}.png`} />
                         <span>{itemAtual}</span>
                       </a>
@@ -126,6 +120,26 @@ export default function Home() {
                   )
                 })}
             </ul>
+          </ProfileRelationsBoxWrapper>
+
+          <ProfileRelationsBoxWrapper>
+            <h2 className="smallTitle">
+             Minhas comunidades ({comunidades.length})
+            </h2>
+              <ul>
+                {comunidades.map((itemAtual) => {
+                      return (
+                      <li key={itemAtual.id}>
+                          <a href={`/users/${itemAtual.title}`}>
+                            {/* <img src={`https://via.placeholder.com/300x300`} /> */}
+                            {/* <img src={`https://picsum.photos/300/300`} /> */}
+                            <img src={itemAtual.image} />
+                            <span>{itemAtual.title}</span>
+                          </a>
+                      </li>
+                    )
+                })}
+              </ul>
           </ProfileRelationsBoxWrapper>
         </div>
         
