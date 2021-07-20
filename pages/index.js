@@ -48,11 +48,7 @@ function ProfileRelationsBox(propriedades){
 
 export default function Home() {
   const usuarioAleatorio = 'LukasWyver';
-  const [ comunidades, setComunidades ] = React.useState([{
-    id: 'adadadsad',
-    title: 'Eu odeio acordar cedo',
-    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
-  }]);
+  const [ comunidades, setComunidades ] = React.useState([]);
   
   const pessoasFavoritas = [
     'juunegreiros',
@@ -68,12 +64,36 @@ export default function Home() {
     const [seguidores, setSeguidores] = React.useState([]);
 
     React.useEffect(function(){
+      //GET
       fetch('https://api.github.com/users/LukasWyver/followers')
       .then(function (respostaDoServidor) {
           return respostaDoServidor.json();
       })  
       .then(function(respostaCompleta){
         setSeguidores(respostaCompleta);
+      })
+      // API GraphQL Token: d7f89b14082f84236659980577b8b6
+      fetch('https://graphql.datocms.com/', {
+        method: 'POST',
+        headers:{
+          'Authorization': 'd7f89b14082f84236659980577b8b6',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json' ,
+        },
+        body: JSON.stringify({ "query":`query{
+          allCommunities {
+            title
+            id
+            imageUrl
+            creatorSlug
+          }
+        }` })
+      })
+      .then((response) => response.json())
+      .then((respostaCompleta) => {
+        const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
+        console.log(comunidadesVindasDoDato)
+        setComunidades(comunidadesVindasDoDato)
       })
     }, [])
 
